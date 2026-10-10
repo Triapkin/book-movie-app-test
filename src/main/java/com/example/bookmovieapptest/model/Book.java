@@ -24,7 +24,7 @@ public class Book {
     private String author;
 
     private String genre;
-    private Integer year;
+    private Integer yearPublished;
 
     @Column(length = 1000)
     private String description;
