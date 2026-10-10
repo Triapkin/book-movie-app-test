@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS books (
     title VARCHAR(255) NOT NULL,
     author VARCHAR(255) NOT NULL,
     genre VARCHAR(255),
-    year INT,
+    year_published INT,
     description VARCHAR(1000)
 );
 
@@ -12,15 +12,15 @@ CREATE TABLE IF NOT EXISTS movies (
     title VARCHAR(255) NOT NULL,
     director VARCHAR(255) NOT NULL,
     genre VARCHAR(255),
-    year INT,
+    year_published INT,
     rating DOUBLE,
     description VARCHAR(1000)
 );
 
-INSERT INTO books (title, author, genre, year, description) VALUES
+INSERT INTO books (title, author, genre, year_published, description) VALUES
 ('The Hobbit', 'J.R.R. Tolkien', 'Fantasy', 1937, 'A classic adventure story about Bilbo and the journey of the dwarves.'),
 ('Clean Code', 'Robert C. Martin', 'Technology', 2008, 'A practical guide to writing clean and maintainable software.');
 
-INSERT INTO movies (title, director, genre, year, rating, description) VALUES
+INSERT INTO movies (title, director, genre, year_published, rating, description) VALUES
 ('Inception', 'Christopher Nolan', 'Sci-Fi', 2010, 8.8, 'A mind-bending action movie about dreams and time.'),
 ('The Shawshank Redemption', 'Frank Darabont', 'Drama', 1994, 9.3, 'A powerful prison drama about hope and friendship.');
