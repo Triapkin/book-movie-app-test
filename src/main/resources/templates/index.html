@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Movie App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .table thead th {
+            background-color: #eef3ff;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #bb2d3b;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <div class="text-center mb-4">
+        <h1 class="display-5 fw-bold">Book & Movie Library</h1>
+        <p class="text-muted">Track your favorite books and movies</p>
+    </div>
+
+    <div x-data="appData()" x-init="init()">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white fw-semibold">Books</div>
+                    <div class="card-body">
+                        <form @submit.prevent="addBook()">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <input x-model="bookForm.title" class="form-control" type="text" placeholder="Title" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <input x-model="bookForm.author" class="form-control" type="text" placeholder="Author" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <input x-model="bookForm.genre" class="form-control" type="text" placeholder="Genre">
+                                </div>
+                                <div class="col-md-4">
+                                    <input x-model="bookForm.year" class="form-control" type="number" placeholder="Year" min="1900" max="2100">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary w-100">Add Book</button>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <textarea x-model="bookForm.description" class="form-control" rows="2" placeholder="Short description"></textarea>
+                            </div>
+                        </form>
+
+                        <div class="mt-4">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Year</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <template x-for="book in books" :key="book.id">
+                                    <tr>
+                                        <td x-text="book.title"></td>
+                                        <td x-text="book.author"></td>
+                                        <td x-text="book.year"></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-delete" @click="deleteBook(book.id)">Delete</button>
+                                        </td>
+                                    </tr>
+                                </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark fw-semibold">Movies</div>
+                    <div class="card-body">
+                        <form @submit.prevent="addMovie()">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <input x-model="movieForm.title" class="form-control" type="text" placeholder="Title" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <input x-model="movieForm.director" class="form-control" type="text" placeholder="Director" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <input x-model="movieForm.genre" class="form-control" type="text" placeholder="Genre">
+                                </div>
+                                <div class="col-md-4">
+                                    <input x-model="movieForm.year" class="form-control" type="number" placeholder="Year" min="1900" max="2100">
+                                </div>
+                                <div class="col-md-4">
+                                    <input x-model="movieForm.rating" class="form-control" type="number" step="0.1" min="0" max="10" placeholder="Rating">
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <textarea x-model="movieForm.description" class="form-control" rows="2" placeholder="Short description"></textarea>
+                            </div>
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-warning text-dark w-100">Add Movie</button>
+                            </div>
+                        </form>
+
+                        <div class="mt-4">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Director</th>
+                                    <th>Rating</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <template x-for="movie in movies" :key="movie.id">
+                                    <tr>
+                                        <td x-text="movie.title"></td>
+                                        <td x-text="movie.director"></td>
+                                        <td x-text="movie.rating"></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-delete" @click="deleteMovie(movie.id)">Delete</button>
+                                        </td>
+                                    </tr>
+                                </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function appData() {
+        return {
+            books: [],
+            movies: [],
+            bookForm: {
+                title: '',
+                author: '',
+                genre: '',
+                year: '',
+                description: ''
+            },
+            movieForm: {
+                title: '',
+                director: '',
+                genre: '',
+                year: '',
+                rating: '',
+                description: ''
+            },
+            async init() {
+                await this.loadBooks();
+                await this.loadMovies();
+            },
+            async loadBooks() {
+                const response = await fetch('/api/books');
+                this.books = await response.json();
+            },
+            async loadMovies() {
+                const response = await fetch('/api/movies');
+                this.movies = await response.json();
+            },
+            async addBook() {
+                const payload = {
+                    title: this.bookForm.title,
+                    author: this.bookForm.author,
+                    genre: this.bookForm.genre,
+                    year: this.bookForm.year ? Number(this.bookForm.year) : null,
+                    description: this.bookForm.description
+                };
+
+                await fetch('/api/books', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                this.bookForm = { title: '', author: '', genre: '', year: '', description: '' };
+                await this.loadBooks();
+            },
+            async deleteBook(id) {
+                await fetch(`/api/books/${id}`, { method: 'DELETE' });
+                await this.loadBooks();
+            },
+            async addMovie() {
+                const payload = {
+                    title: this.movieForm.title,
+                    director: this.movieForm.director,
+                    genre: this.movieForm.genre,
+                    year: this.movieForm.year ? Number(this.movieForm.year) : null,
+                    rating: this.movieForm.rating ? Number(this.movieForm.rating) : null,
+                    description: this.movieForm.description
+                };
+
+                await fetch('/api/movies', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                this.movieForm = { title: '', director: '', genre: '', year: '', rating: '', description: '' };
+                await this.loadMovies();
+            },
+            async deleteMovie(id) {
+                await fetch(`/api/movies/${id}`, { method: 'DELETE' });
+                await this.loadMovies();
+            }
+        };
+    }
+</script>
+</body>
+</html>
