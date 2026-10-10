@@ -24,7 +24,7 @@ public class Movie {
     private String director;
 
     private String genre;
-    private Integer year;
+    private Integer yearPublished;
     private Double rating;
 
     @Column(length = 1000)
